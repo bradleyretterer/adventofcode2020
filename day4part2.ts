@@ -1268,7 +1268,7 @@ function isValidEyeColor(value) {
 }
 
 function isValidPassportId(value) {
-    return /[0-9]{9}/.test(value);
+    return /^[0-9]{9}$/.test(value);
 }
 
 console.log(validPassportCount);

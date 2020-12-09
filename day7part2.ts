@@ -612,11 +612,11 @@ bagDescriptions.forEach(description => {
 
         if (!bagTypeInfo) {
             map.set(bagType, {
-                [containingBag]: numberBags,
+                [containingBag]: Number(numberBags),
             });
         } else {
             const newContainingBags = Object.assign({}, bagTypeInfo, {
-                [containingBag]: numberBags,
+                [containingBag]: Number(numberBags),
             });
 
             map.set(bagType, newContainingBags);
@@ -624,37 +624,23 @@ bagDescriptions.forEach(description => {
     });
 });
 
-let numberOfBagsThatContainOneShinyGoldBag = -1; // don't count bag searching for
-for (const bag of map.keys()) {
-    const bagHasOneShinyGoldBag = bagContainsOneShinyGoldBag(bag, map);
+console.log(bagsContainedInBag(BAG_SEARCHING_FOR, map));
 
-    if (bagHasOneShinyGoldBag) {
-        numberOfBagsThatContainOneShinyGoldBag++;
-    }
-}
-
-function bagContainsOneShinyGoldBag(bag, map) {
+function bagsContainedInBag(bag, map) {
     if (bag === undefined) {
-        return false;
-    }
-
-    if (bag === BAG_SEARCHING_FOR) {
-        return true;
+        return 0;
     }
 
     const containingBags = map.get(bag);
 
     if (!containingBags) {
-        return false;
+        return 0;
     }
 
-    for (const containingBag of Object.keys(containingBags)) {
-        if (bagContainsOneShinyGoldBag(containingBag, map)) {
-            return true;
-        }
+    let numberOfBags = 0;
+    for (const [containingBag, number] of Object.entries(containingBags)) {
+        numberOfBags += number + (number * bagsContainedInBag(containingBag, map));
     }
 
-    return false;
+    return numberOfBags;
 }
-
-console.log(numberOfBagsThatContainOneShinyGoldBag);
